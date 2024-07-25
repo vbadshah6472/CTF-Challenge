@@ -25,22 +25,10 @@
             border: 1px solid #007bff;
             position: relative; /* Added to position children absolutely */
         }
-        .scoreboard {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px;
-            background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
-            border-radius: 8px;
-            box-shadow: 0 0 15px 5px rgba(255, 237, 131, 0.8);
-            color: #fff;
-            text-align: center;
-            font-size: 16px;
-        }
         .timer {
             position: absolute;
             top: 20px;
-            left: 20px;
+            right: 20px;
             padding: 10px;
             background: linear-gradient(to right, #f12711, #f5af19);
             border-radius: 8px;
@@ -59,10 +47,10 @@
         }
         h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 15px;
         }
         .puzzle {
-            font-size: 18px;
+            font-size: 25px;
             margin-bottom: 20px;
         }
         input[type="text"] {
@@ -110,6 +98,11 @@
             transform: translateX(-50%);
             margin-top: 20px; /* Added margin */
             animation: shine 2s infinite; /* Added shining effect */
+        }
+        .next-level-btn:hover {
+            background-color: #06c435;
+            border-color: #23ec66;
+            box-shadow: 0 0 15px #ffec83;
         }
         @keyframes shine {
             0% {
@@ -178,15 +171,13 @@
 </head>
 <body oncopy="return false" onpaste="return false" oncut="return false">
     <div class="container">
-        <div class="scoreboard">
-            <h3>Score: <span id="score">0</span></h3>
-        </div>
         <div class="timer">
-            <h3>Time Left: <span id="timer">02:00</span></h3>
+            <h3>Time Left: <span id="timer">01:30</span></h3>
         </div>
-        <h1>STEM ELITES CLUB</h1>
+        <h1>CAPTURE THE FLAG</h1>
         <h2>Level 1</h2>
-        <p class="puzzle">What is the sum of 12 and 15?</p>
+        <p class="puzzle">If x<sup>0</sup> = 1, the value of 0<sup>x</sup> is ?
+        </p>
         <div>
             <input type="text" id="answerInput" placeholder="Enter your answer" onkeypress="if(event.keyCode == 13) {checkAnswer();}">
             <button class="btn" onclick="checkAnswer()">Submit</button>
@@ -203,12 +194,16 @@
             <button onclick="skipLevel()">Yes, Skip</button>
         </div>
     </div>
+  <!-- Audio Elements -->
+    <audio id="incorrectSound" src="incorrect_answer_sound_effect.m4a"></audio>
+    <audio id="correctSound" src="correct_answer_sound_effect.m4a"></audio>
+    
     <script>
         let score = 0;
         let incorrectAttempts = 0;
-        const level2Password = 'level2Pass1234'; // Example password for the next level
+        const level2Password = 'lev2pass'; // Example password for the next level
         let hasAnsweredCorrectly = false;
-        let timeLeft = 120; // 2 minutes in seconds
+        let timeLeft = 90; // 1.5 minutes in seconds
         let skipsLeft = 3; // Number of skips allowed
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -218,7 +213,7 @@
 
         function checkAnswer() {
             const userAnswer = document.getElementById("answerInput").value.trim();
-            const correctAnswer = "27"; // Adjust based on actual answer
+            const correctAnswer = "0"; // Adjust based on actual answer
             if (userAnswer === correctAnswer && !hasAnsweredCorrectly) {
                 document.getElementById("message").innerHTML = `<span style='color: green;'>Correct! Your password for the next level is: <span id="password">${level2Password}</span></span>`;
                 document.querySelector('.next-level-btn').style.display = 'block'; // Show next level button
@@ -229,18 +224,31 @@
 
                 // Set up the password copy functionality
                 setupPasswordCopy();
+
+                 // Play correct answer sound
+                 playSound('correctSound');
             } else if (!hasAnsweredCorrectly) {
                 document.getElementById("message").innerHTML = "<span style='color: red;'>Incorrect. Try again.</span>";
                 incorrectAttempts++;
                 if (incorrectAttempts % 3 === 0 && incorrectAttempts >= 3) {
                     updateScore(-2); // Decrease score after 3 consecutive incorrect attempts
                 }
+
+                 // Play incorrect answer sound
+                 playSound('incorrectSound');
+             }
+            }
+            function playSound(soundId) {
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.play();
             }
         }
 
         function updateScore(points) {
             score += points;
-            document.getElementById("score").innerText = score;
+            // Update the scoreboard if it was present
+            // document.getElementById("score").innerText = score;
         }
 
         async function copyToClipboard(text) {
@@ -324,42 +332,5 @@
         // Start the timer on page load
         startTimer();
     </script>
-<!-- Code injected by live-server -->
-<script>
-    // <![CDATA[  <-- For SVG support
-    if ('WebSocket' in window) {
-        (function () {
-            function refreshCSS() {
-                var sheets = [].slice.call(document.getElementsByTagName("link"));
-                var head = document.getElementsByTagName("head")[0];
-                for (var i = 0; i < sheets.length; ++i) {
-                    var elem = sheets[i];
-                    var parent = elem.parentElement || head;
-                    parent.removeChild(elem);
-                    var rel = elem.rel;
-                    if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-                        var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-                        elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-                    }
-                    parent.appendChild(elem);
-                }
-            }
-            var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-            var address = protocol + window.location.host + window.location.pathname + '/ws';
-            var socket = new WebSocket(address);
-            socket.onmessage = function (msg) {
-                if (msg.data == 'reload') window.location.reload();
-                else if (msg.data == 'refreshcss') refreshCSS();
-            };
-            if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-                console.log('Live reload enabled.');
-                sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-            }
-        })();
-    }
-    else {
-        console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-    }
-</script>
 </body>
 </html>
