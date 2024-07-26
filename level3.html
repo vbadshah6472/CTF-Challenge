@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 2 - STEM ELITES CLUB CTF</title>
+    <title>Level 3 - STEM ELITES CLUB CTF</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -221,6 +221,7 @@
         function checkPassword() {
             const userPassword = document.getElementById("passwordInput").value.trim();
             if (userPassword === level3Password) {
+    document.getElementById("message").innerHTML = `<span style='color: green;'>Correct! Your password for the next level is: <span id="password">${level3Password}</span></span>`;
                 document.getElementById("passwordContainer").style.display = 'none';
                 document.getElementById("questionContainer").style.display = 'block';
                 hasEnteredPassword = true;
